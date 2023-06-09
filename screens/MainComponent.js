@@ -1,13 +1,18 @@
 import CampsiteInfoScreen from './CampsiteInfoScreen';
 import DirectoryScreen from './DirectoryScreen';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Image, Platform, StyleSheet, Text, View } from 'react-native';
 import { Constants } from "expo-constants";
 import { createStackNavigator } from "@react-navigation/stack";
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import {
+    createDrawerNavigator,
+    DrawerContentScrollView,
+    DrawerItemList
+} from '@react-navigation/drawer';
 import HomeScreen from './HomeScreen';
 import AboutScreen from './AboutScreen';
 import ContactScreen from './ContactScreen';
 import { Icon } from 'react-native-elements';
+import logo from '../assets/images/logo.png';
 
 const Drawer = createDrawerNavigator();
 
@@ -25,16 +30,16 @@ const HomeNavigator = () => {
                 name="Home"
                 component={HomeScreen}
                 options={({ navigation }) => ({
-                     title: 'Home',
-                     headerLeft: () => (
+                    title: 'Home',
+                    headerLeft: () => (
                         <Icon
                             name='home'
                             type='font-awesome'
                             iconStyle={styles.stackIcon}
                             onPress={() => navigation.toggleDrawer()}
                         />
-                     ) 
-                    })}
+                    )
+                })}
             />
         </Stack.Navigator>
     );
@@ -54,14 +59,14 @@ const DirectoryNavigator = () => {
                 options={({ navigation }) => ({
                     title: 'Campsite Directory',
                     headerLeft: () => (
-                       <Icon
-                           name='list'
-                           type='font-awesome'
-                           iconStyle={styles.stackIcon}
-                           onPress={() => navigation.toggleDrawer()}
-                       />
-                    ) 
-                   })}
+                        <Icon
+                            name='list'
+                            type='font-awesome'
+                            iconStyle={styles.stackIcon}
+                            onPress={() => navigation.toggleDrawer()}
+                        />
+                    )
+                })}
             />
             <Stack.Screen
                 name='CampsiteInfo'
@@ -84,18 +89,18 @@ const AboutNavigator = () => {
                 component={AboutScreen}
                 options={({ navigation }) => ({
                     headerLeft: () => (
-                       <Icon
-                           name='info-circle'
-                           type='font-awesome'
-                           iconStyle={styles.stackIcon}
-                           onPress={() => navigation.toggleDrawer()}
-                       />
-                    ) 
-                   })}
+                        <Icon
+                            name='info-circle'
+                            type='font-awesome'
+                            iconStyle={styles.stackIcon}
+                            onPress={() => navigation.toggleDrawer()}
+                        />
+                    )
+                })}
             />
         </Stack.Navigator>
     );
-}; 
+};
 const ContactNavigator = () => {
     const Stack = createStackNavigator();
 
@@ -107,18 +112,32 @@ const ContactNavigator = () => {
                 options={({ navigation }) => ({
                     title: 'Contact Us',
                     headerLeft: () => (
-                       <Icon
-                           name='address-card'
-                           type='font-awesome'
-                           iconStyle={styles.stackIcon}
-                           onPress={() => navigation.toggleDrawer()}
-                       />
-                    ) 
-                   })}
+                        <Icon
+                            name='address-card'
+                            type='font-awesome'
+                            iconStyle={styles.stackIcon}
+                            onPress={() => navigation.toggleDrawer()}
+                        />
+                    )
+                })}
             />
         </Stack.Navigator>
     );
 };
+
+const CustomDrawerContent = (props) => {
+    <DrawerContentScrollView {...props}>
+        <View style={styles.drawerHeader}>
+            <View style={{ flex: 1 }}>
+                <Image source={logo} style={styles.drawerImage}/>
+            </View>
+            <View style={{ flex: 2 }}>
+                <Text style={styles.drawerHeaderText}>Nucamp</Text>
+            </View>
+        </View>
+        <DrawerItemList {...props} labelStyle={{ fontWeight: 'bold' }} />
+    </DrawerContentScrollView>
+}
 
 const Main = () => {
     return (
@@ -131,12 +150,13 @@ const Main = () => {
         >
             <Drawer.Navigator
                 initialRouteName='Home'
+                drawerContent={CustomDrawerContent}
                 drawerStyle={{ backgroundColor: '#CEC8FF' }}
             >
                 <Drawer.Screen
                     name='Home'
                     component={HomeNavigator}
-                    options={{ 
+                    options={{
                         title: 'Home',
                         drawerIcon: ({ color }) => (
                             <Icon
@@ -152,17 +172,18 @@ const Main = () => {
                 <Drawer.Screen
                     name='Directory'
                     component={DirectoryNavigator}
-                    options={{ title: 'Campsite Directory',
-                    drawerIcon: ({ color }) => (
-                        <Icon
-                            name='list'
-                            type='font-awesome'
-                            size={24}
-                            iconStyle={{ width: 24 }}
-                            color={color}
-                        />
-                    )
-                }}
+                    options={{
+                        title: 'Campsite Directory',
+                        drawerIcon: ({ color }) => (
+                            <Icon
+                                name='list'
+                                type='font-awesome'
+                                size={24}
+                                iconStyle={{ width: 24 }}
+                                color={color}
+                            />
+                        )
+                    }}
                 />
                 <Drawer.Screen
                     name='About'
@@ -183,7 +204,7 @@ const Main = () => {
                 <Drawer.Screen
                     name='Contact'
                     component={ContactNavigator}
-                    options={{ 
+                    options={{
                         title: 'Contact Us',
                         drawerIcon: ({ color }) => (
                             <Icon
@@ -193,8 +214,8 @@ const Main = () => {
                                 iconStyle={{ width: 24 }}
                                 color={color}
                             />
-                        ) 
-                    
+                        )
+
                     }}
                 />
             </Drawer.Navigator>
@@ -203,6 +224,24 @@ const Main = () => {
 };
 
 const styles = StyleSheet.create({
+    drawerHeader: {
+        backgroundColor: '#5637DD',
+        height: 140,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flex: 1,
+        flexDirection: 'row'
+    },
+    drawerHeaderText: {
+        color: '#fff',
+        fontSize: 24,
+        fontWeight: 'bold'
+    },
+    drawerImage: {
+        margin: 10,
+        height: 60,
+        width: 60
+    },
     stackIcon: {
         marginLeft: 10,
         color: '#fff',
