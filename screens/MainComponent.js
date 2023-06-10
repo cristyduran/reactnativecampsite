@@ -1,8 +1,8 @@
+import { Image, Platform, StyleSheet, Text, View } from 'react-native';
+import Constants from 'expo-constants';
 import CampsiteInfoScreen from './CampsiteInfoScreen';
 import DirectoryScreen from './DirectoryScreen';
-import { Image, Platform, StyleSheet, Text, View } from 'react-native';
-import { Constants } from "expo-constants";
-import { createStackNavigator } from "@react-navigation/stack";
+import { createStackNavigator } from '@react-navigation/stack';
 import {
     createDrawerNavigator,
     DrawerContentScrollView,
@@ -13,21 +13,26 @@ import AboutScreen from './AboutScreen';
 import ContactScreen from './ContactScreen';
 import { Icon } from 'react-native-elements';
 import logo from '../assets/images/logo.png';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { fetchPartners } from '../features/partners/partnersSlice';
+import { fetchCampsites } from '../features/campsites/campsitesSlice';
+import { fetchPromotions } from '../features/promotions/promotionsSlice';
+import { fetchComments } from '../features/comments/commentsSlice';
 
 const Drawer = createDrawerNavigator();
 
 const screenOptions = {
     headerTintColor: '#fff',
     headerStyle: { backgroundColor: '#5637DD' }
-}
+};
 
 const HomeNavigator = () => {
     const Stack = createStackNavigator();
-
     return (
         <Stack.Navigator screenOptions={screenOptions}>
             <Stack.Screen
-                name="Home"
+                name='Home'
                 component={HomeScreen}
                 options={({ navigation }) => ({
                     title: 'Home',
@@ -45,12 +50,56 @@ const HomeNavigator = () => {
     );
 };
 
+const AboutNavigator = () => {
+    const Stack = createStackNavigator();
+    return (
+        <Stack.Navigator screenOptions={screenOptions}>
+            <Stack.Screen
+                name='About'
+                component={AboutScreen}
+                options={({ navigation }) => ({
+                    headerLeft: () => (
+                        <Icon
+                            name='info-circle'
+                            type='font-awesome'
+                            iconStyle={styles.stackIcon}
+                            onPress={() => navigation.toggleDrawer()}
+                        />
+                    )
+                })}
+            />
+        </Stack.Navigator>
+    );
+};
+
+const ContactNavigator = () => {
+    const Stack = createStackNavigator();
+    return (
+        <Stack.Navigator screenOptions={screenOptions}>
+            <Stack.Screen
+                name='Contact'
+                component={ContactScreen}
+                options={({ navigation }) => ({
+                    title: 'Contact Us',
+                    headerLeft: () => (
+                        <Icon
+                            name='address-card'
+                            type='font-awesome'
+                            iconStyle={styles.stackIcon}
+                            onPress={() => navigation.toggleDrawer()}
+                        />
+                    )
+                })}
+            />
+        </Stack.Navigator>
+    );
+};
+
 const DirectoryNavigator = () => {
     const Stack = createStackNavigator();
-
     return (
         <Stack.Navigator
-            initialRouteName="Directory"
+            initialRouteName='Directory'
             screenOptions={screenOptions}
         >
             <Stack.Screen
@@ -79,67 +128,30 @@ const DirectoryNavigator = () => {
     );
 };
 
-const AboutNavigator = () => {
-    const Stack = createStackNavigator();
-
-    return (
-        <Stack.Navigator screenOptions={screenOptions}>
-            <Stack.Screen
-                name="About"
-                component={AboutScreen}
-                options={({ navigation }) => ({
-                    headerLeft: () => (
-                        <Icon
-                            name='info-circle'
-                            type='font-awesome'
-                            iconStyle={styles.stackIcon}
-                            onPress={() => navigation.toggleDrawer()}
-                        />
-                    )
-                })}
-            />
-        </Stack.Navigator>
-    );
-};
-const ContactNavigator = () => {
-    const Stack = createStackNavigator();
-
-    return (
-        <Stack.Navigator screenOptions={screenOptions}>
-            <Stack.Screen
-                name="Contact"
-                component={ContactScreen}
-                options={({ navigation }) => ({
-                    title: 'Contact Us',
-                    headerLeft: () => (
-                        <Icon
-                            name='address-card'
-                            type='font-awesome'
-                            iconStyle={styles.stackIcon}
-                            onPress={() => navigation.toggleDrawer()}
-                        />
-                    )
-                })}
-            />
-        </Stack.Navigator>
-    );
-};
-
-const CustomDrawerContent = (props) => {
+const CustomDrawerContent = (props) => (
     <DrawerContentScrollView {...props}>
         <View style={styles.drawerHeader}>
             <View style={{ flex: 1 }}>
-                <Image source={logo} style={styles.drawerImage}/>
+                <Image source={logo} style={styles.drawerImage} />
             </View>
             <View style={{ flex: 2 }}>
-                <Text style={styles.drawerHeaderText}>Nucamp</Text>
+                <Text style={styles.drawerHeaderText}>NuCamp</Text>
             </View>
         </View>
         <DrawerItemList {...props} labelStyle={{ fontWeight: 'bold' }} />
     </DrawerContentScrollView>
-}
+);
 
 const Main = () => {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(fetchCampsites());
+        dispatch(fetchPromotions());
+        dispatch(fetchPartners());
+        dispatch(fetchComments());
+    }, [dispatch]);
+
     return (
         <View
             style={{
@@ -215,7 +227,6 @@ const Main = () => {
                                 color={color}
                             />
                         )
-
                     }}
                 />
             </Drawer.Navigator>
@@ -247,6 +258,6 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 24
     }
-})
+});
 
 export default Main;
